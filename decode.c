@@ -55,10 +55,6 @@ int main(int argc, char *argv[]) {
     // Cria uma matriz de strings onde cada linha representa um dígito binário do código de barras.
     char **matriz_binaria = criar_vetores(largura, area, espace, arquivo);
 
-    for(int i=0; i<8; ++i){
-        printf("%s ", matriz_binaria[i]);
-    }
-
     // Converte cada linha da matriz binária para seu valor numérico em base 10.
     int *digitos_codigo_barras = converter_binario_base10(matriz_binaria);
 
