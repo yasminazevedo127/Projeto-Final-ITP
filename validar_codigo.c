@@ -8,41 +8,40 @@
 
 int largura, altura;
 
-int quant_tipo_elementos(char codeStr[]){
+int quant_tipo_elementos(char codeStr[]) {
+    
+    setlocale(LC_ALL, ""); // Configura a localidade para suportar caracteres especiais
 
-    setlocale(LC_ALL,"");
     int validade;
-    char verificacao[] = "0123456789";
+    char verificacao[] = "0123456789"; // Conjunto de caracteres numéricos permitidos
 
-    // Verifica a validade do c�digo informado pelo o usu�rio
-    if(!(strlen(codeStr) == 8)){
-        printf("Identificador n�o possui 8 d�gitos!\n");
+    // Verifica se o código informado possui exatamente 8 dígitos
+    if (strlen(codeStr) != 8) {
+        printf("Erro: Identificador deve conter exatamente 8 dígitos!\n");
         return 0;
+    } else {
+        // Percorre cada caractere da string para verificar se são apenas números
+        for (int i = 0; i < strlen(codeStr); ++i) {
+            int testeElem = 0; // Flag para indicar se o caractere é numérico
 
-    }else{
-        // Verifica se todos os caracteres do código são numéricos
-        for(int i = 0; i < strlen(codeStr); ++i){
-
-            int testeElem = 0;
-
-            for(int j = 0; j < 10; ++j){
-                if(codeStr[i] == verificacao[j]){
-                    testeElem = 1;
+            // Compara o caractere atual com a lista de caracteres numéricos permitidos
+            for (int j = 0; j < 10; ++j) {
+                if (codeStr[i] == verificacao[j]) {
+                    testeElem = 1; // O caractere é um número válido
                 }
             }
-            // Se algum caractere não for numérico, o código é inválido
-            if(testeElem == 0){
-                validade = 0;
-                printf("Identificador cont�m valores n�o num�ricos!\n");
-                break;
 
-            }else{
-                validade = 1;
+            // Se o caractere não for encontrado na lista de números, código inválido
+            if (testeElem == 0) {
+                validade = 0;
+                printf("Erro: Identificador contém caracteres não numéricos!\n");
+                break; // Para a verificação assim que um caractere inválido for encontrado
+            } else {
+                validade = 1; // O código permanece válido enquanto não houver erro
             }
         }
-        return validade;
+        return validade; // Retorna 1 se o código for válido, ou 0 se for inválido
     }
-
 }
 
 // Converte o c�digo tipo string para tipo inteiro
@@ -168,25 +167,31 @@ int checar_espace(FILE *arquivo, int largura) {
     return espace; // Retorna a quantidade de linhas compostas apenas por '0's
 }
 
-int verificar_codigo_de_barras(char** matriz_binaria, int* digitos_codigo_barras, int espace){
+int verificar_codigo_de_barras(char** matriz_binaria, int* digitos_codigo_barras, int espace) {
 
-    if(espace == -1){ //checando flag de erro
-        printf("O codigo de barras nao foi encontrado.");
+    // Verifica se o código de barras não foi encontrado na imagem
+    if (espace == -1) {
+        printf("Erro: O código de barras não foi encontrado.\n");
         return 0;
-    } else if(espace == -2){ //checando flag de erro
-        printf("Codigo de barras invalido: Caracteres invalidos presentes no arquivo.");
-        return 0;
-    }
-
-    if(matriz_binaria[0][0] == '2'){ //checando flag de erro
-        printf("Codigo de barras invalido: Caracteres invalidos presentes no arquivo.");
+    } 
+    // Verifica se há caracteres inválidos na imagem PBM
+    else if (espace == -2) {
+        printf("Erro: Código de barras inválido. O arquivo contém caracteres não reconhecidos.\n");
         return 0;
     }
 
-    if(digitos_codigo_barras[0]== -1){ //checando flag de erro
-        printf("Codigo de barras invalido: Digitos do codigo de barras sao invalidos");
+    // Verifica se a extração da matriz binária falhou (flag de erro '2')
+    if (matriz_binaria[0][0] == '2') {
+        printf("Erro: Código de barras inválido. Problema na extração dos bits do PBM.\n");
         return 0;
     }
 
-    return 1; //caso nenhum problema for encontrado
+    // Verifica se a conversão de binário para decimal falhou (flag de erro '-1')
+    if (digitos_codigo_barras[0] == -1) {
+        printf("Erro: Código de barras inválido. Os dígitos extraídos não correspondem ao padrão EAN-8.\n");
+        return 0;
+    }
+
+    // Se todas as verificações forem bem-sucedidas, o código de barras é válido
+    return 1;
 }

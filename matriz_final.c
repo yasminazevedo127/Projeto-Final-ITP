@@ -132,16 +132,19 @@ int calcular_area(int largura, int espace, FILE *arquivo){
 }
 
 void processar_codigo(char** vetores, FILE* arquivo, int start, int end, int indice_inicial, int area, int* cont) {
+
     for (int i = indice_inicial; i < indice_inicial + 4; i++) {
-        int j = 0;
+        int j = 0; // Índice para posicionar os caracteres em cada vetor de destino
+        // Enquanto não ultrapassar o limite de 'end' e o número de caracteres lidos não for maior que 7
         while (*cont < end && j < 7) {
-            char c = fgetc(arquivo);
-            if (*cont > start && (*cont - start- 1) % area == 0) {
-                vetores[i][j++] = c;
+            char c = fgetc(arquivo); 
+            // Se o contador de leitura ultrapassou o início e está no intervalo certo para ser armazenado
+            if (*cont > start && (*cont - start - 1) % area == 0) {
+                vetores[i][j++] = c; 
             }
-            (*cont)++;
+            (*cont)++; 
         }
-        vetores[i][7] = '\0'; // Adicionar terminador de string
+        vetores[i][7] = '\0'; 
     }
 }
 
